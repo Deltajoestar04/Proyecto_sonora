@@ -12,7 +12,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
 import django
 django.setup()
 
-from monitoreo.models import DataPoint
+from monitoreo.models import Lectura
 
 BROKER = 'test.mosquitto.org'
 PORT = 1883
@@ -44,7 +44,7 @@ def on_message(client, userdata, msg):
             except:
                 print('No se pudo parsear payload:', payload)
                 return
-        dp = DataPoint(municipio=municipio, tipo=tipo, valor=valor)
+        dp = Lectura(municipio=municipio, tipo=tipo, valor=valor)
         dp.save()
         print('Guardado:', dp)
     except Exception as e:
