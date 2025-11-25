@@ -1,0 +1,103 @@
+{% extends 'monitoreo/base.html' %}
+
+{% block content %}
+<style>
+    /* ... dentro del bloque <style> del base.html ... */
+
+.content-section {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08); /* Sombra más pronunciada para la sección principal */
+    margin-bottom: 20px;
+}
+
+.section-title {
+    color: #333;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.6rem;
+    font-weight: 400;
+}
+
+/* Estilos para los controles de filtro */
+.filter-controls {
+    display: flex; /* Alineación horizontal de los filtros */
+    gap: 30px; /* Espacio entre los filtros */
+    margin-bottom: 30px;
+    align-items: center;
+}
+
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.control-group label {
+    font-weight: 500;
+    color: #555;
+    white-space: nowrap; /* Evita que el texto de la etiqueta se rompa */
+}
+
+.filter-controls select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    min-width: 150px; /* Ancho mínimo para que se vean bien */
+    background-color: #fff;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.filter-controls select:focus {
+    border-color: #007bff; /* Resaltado con el color primario */
+    outline: none;
+}
+
+/* Contenedor de la gráfica para asegurar que la gráfica es responsiva */
+.chart-container {
+    position: relative;
+    /* La gráfica tomará todo el ancho del contenedor */
+    width: 100%;
+    /* Altura definida por el canvas, pero envuelto para mejor control */
+    height: auto;
+}
+</style>
+<section class="content-section">
+
+  <h2 class="section-title">Gráfica en Tiempo Real</h2>
+
+  <div class="filter-controls">
+
+    <div class="control-group">
+      <label for="select-municipio">Municipio:</label>
+      <select id="select-municipio" value="Hermosillo">
+          <option value="Hermosillo" selected>Hermosillo</option>
+          <option value="Cajeme">Cajeme</option>
+          <option value="Guaymas">Guaymas</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label for="select-tipo">Tipo de Dato:</label>
+      <select id="select-tipo" value="temperatura">
+          <option value="temperatura" selected>Temperatura</option>
+          <option value="humedad">Humedad</option>
+          <option value="presion">Presión</option>
+      </select>
+    </div>
+
+  </div>
+
+  <div class="chart-container">
+      <canvas id="chart" width="800" height="300"></canvas>
+  </div>
+
+</section>
+
+<script src="/static/monitoreo/js/charts.js"></script>
+{% endblock %}
