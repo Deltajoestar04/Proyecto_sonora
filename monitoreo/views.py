@@ -1,9 +1,12 @@
+# views.py
 from django.shortcuts import render
 from django.http import JsonResponse
 from .models import Lectura
 
+
 def dashboard(request):
     return render(request, 'monitoreo/dashboard.html')
+
 
 def latest_data(request):
     municipio = request.GET.get('municipio')
@@ -15,8 +18,9 @@ def latest_data(request):
     if tipo:
         qs = qs.filter(tipo__iexact=tipo)
     qs = qs.order_by('-timestamp')[:limit]
+
     data = [
-        {'municipio': d.municipio, 'tipo': d.tipo, 'valor': d.valor, 'timestamp': d.recibido_en.isoformat()}
+        {'municipio': d.municipio, 'tipo': d.tipo, 'valor': d.valor, 'timestamp': d.timestamp.isoformat()}
         for d in reversed(qs)
     ]
     return JsonResponse({'data': data})
