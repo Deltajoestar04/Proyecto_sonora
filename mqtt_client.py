@@ -1,65 +1,57 @@
-# mqtt_client.py
 import os
-import time
+import django
 import json
-try:
-    import paho.mqtt.client as mqtt
-except Exception as e:
-    print('paho-mqtt not installed. Install with pip install paho-mqtt')
-    raise
+import time
+import paho.mqtt.client as mqtt
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
-import django
 django.setup()
 
 from monitoreo.models import Lectura
+import logging
+logger = logging.getLogger(__name__)
 
-BROKER = 'test.mosquitto.org'
-PORT = 1883
-TOPIC = 'sonora/#'
-
-client_id = f'django-mqtt-{int(time.time())%10000}'
+MQTT_BROKER = "test.mosquitto.org"
+MQTT_PORT = 1883
+MQTT_TOPIC = "sonora/#"
 
 def on_connect(client, userdata, flags, rc):
-    if rc == 0:
-        print('Conectado al broker MQTT')
-        client.subscribe(TOPIC)
-        print('Suscrito a', TOPIC)
-    else:
-        print('Error de conexión, rc=', rc)
+    print("Conectado a MQTT, rc=", rc)
+    client.subscribe(MQTT_TOPIC)
 
 def on_message(client, userdata, msg):
+    payload = msg.payload.decode('utf-8', errors='ignore')
+    print("Mensaje:", msg.topic, payload)
     try:
-        topic = msg.topic  # e.g., 'sonora/Hermosillo/temperatura'
-        payload = msg.payload.decode('utf-8').strip()
-        parts = topic.split('/')
-        municipio = parts[1] if len(parts) > 1 else 'unknown'
-        tipo = parts[2] if len(parts) > 2 else 'valor'
-        try:
-            valor = float(payload)
-        except:
+        data = json.loads(payload)
+    except Exception:
+        data = {"raw": payload}
+
+    lect = Lectura()
+    # mapea campos como en run_mqtt.py
+    if hasattr(lect, 'valor'):
+        val = None
+        if isinstance(data, dict):
+            val = data.get('valor') or data.get('value') or data.get('reading')
+        if val is None and 'raw' in data:
             try:
-                data = json.loads(payload)
-                valor = float(data.get('valor', 0))
+                val = float(data['raw'])
             except:
-                print('No se pudo parsear payload:', payload)
-                return
-        dp = Lectura(municipio=municipio, tipo=tipo, valor=valor)
-        dp.save()
-        print('Guardado:', dp)
-    except Exception as e:
-        print('Error procesando mensaje:', e)
+                val = None
+        try:
+            lect.valor = float(val) if val is not None else None
+        except:
+            pass
+    if hasattr(lect, 'topic'):
+        lect.topic = msg.topic
+    if hasattr(lect, 'raw'):
+        lect.raw = payload
+    lect.save()
+    print("Guardado lectura id=", lect.pk)
 
-def start():
-    client = mqtt.Client(client_id)
-    client.on_connect = on_connect
-    client.on_message = on_message
-    try:
-        client.connect(BROKER, PORT, 60)
-    except Exception as e:
-        print('Error conectando al broker:', e)
-        return
-    client.loop_forever()
+client = mqtt.Client()
+client.on_connect = on_connect
+client.on_message = on_message
 
-if __name__ == '__main__':
-    start()
+client.connect(MQTT_BROKER, MQTT_PORT, 60)
+client.loop_forever()

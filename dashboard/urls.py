@@ -1,9 +1,10 @@
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import RedirectView
+from monitoreo import views as monitoreo_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('monitoreo.urls')),
-    path('', RedirectView.as_view(url='/dashboard/')),
+    path('', monitoreo_views.dashboard_index),
+    path('dashboard/', monitoreo_views.dashboard_index, name='dashboard'),
+    path('api/lecturas/', monitoreo_views.api_lecturas, name='api_lecturas'),
 ]

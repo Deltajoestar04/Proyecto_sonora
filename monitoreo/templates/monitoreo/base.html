@@ -2,16 +2,15 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
+  <title>Dashboard - Proyecto Sonora</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dashboard Sonora</title>
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <header style="padding:10px; background:#222; color:white;">
-    <h1>Dashboard Sonora - IoT</h1>
-  </header>
-  <main style="padding:16px;">
-    {% block content %}{% endblock %}
-  </main>
+  <h1>Dashboard - Lecturas</h1>
+  <canvas id="lecturasChart" width="800" height="300"></canvas>
+
+  <script src="{% static 'monitoreo/js/charts.js' %}"></script>
 </body>
 </html>

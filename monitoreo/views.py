@@ -1,26 +1,32 @@
-# views.py
-from django.shortcuts import render
+# monitoreo/views.py
 from django.http import JsonResponse
+from django.shortcuts import render
 from .models import Lectura
+from django.views.decorators.http import require_GET
+import datetime
+
+@require_GET
+def api_lecturas(request):
+
+    qs = Lectura.objects.all().order_by('id')  # cambia ordering si prefieres por fecha
+    data = []
+    for obj in qs:
+
+        item = {}
+        for field in obj._meta.get_fields():
+            if hasattr(field, 'attname'):
+                name = field.attname
+                try:
+                    value = getattr(obj, name)
+                except Exception:
+                    value = None
+                if isinstance(value, datetime.datetime):
+                    value = value.isoformat()
+                item[name] = value
+        data.append(item)
+    return JsonResponse(data, safe=False)
 
 
-def dashboard(request):
-    return render(request, 'monitoreo/dashboard.html')
+def dashboard_index(request):
 
-
-def latest_data(request):
-    municipio = request.GET.get('municipio')
-    tipo = request.GET.get('tipo')
-    limit = int(request.GET.get('limit', '50'))
-    qs = Lectura.objects.all()
-    if municipio:
-        qs = qs.filter(municipio__iexact=municipio)
-    if tipo:
-        qs = qs.filter(tipo__iexact=tipo)
-    qs = qs.order_by('-timestamp')[:limit]
-
-    data = [
-        {'municipio': d.municipio, 'tipo': d.tipo, 'valor': d.valor, 'timestamp': d.timestamp.isoformat()}
-        for d in reversed(qs)
-    ]
-    return JsonResponse({'data': data})
+    return render(request, "dashboard/index.html")
