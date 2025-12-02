@@ -1,14 +1,9 @@
-# monitoreo/admin.py
-
 from django.contrib import admin
-from .models import Lectura
+from .models import SensorData
 
-class LecturaAdmin(admin.ModelAdmin):
-
-    list_display = ('id', 'municipio', 'tipo', 'valor', 'timestamp')
-    list_filter = ('municipio', 'tipo', 'timestamp')
-    search_fields = ('municipio', 'tipo')
-    ordering = ('-timestamp',)
-
-
-admin.site.register(Lectura, LecturaAdmin)
+@admin.register(SensorData)
+class SensorDataAdmin(admin.ModelAdmin):
+    list_display = ('timestamp', 'municipio', 'tipo_dato', 'value', 'topic')
+    list_filter = ('municipio', 'tipo_dato')
+    search_fields = ('municipio', 'topic')
+    readonly_fields = ('timestamp', 'topic', 'municipio', 'tipo_dato', 'value')
