@@ -1,3 +1,7 @@
+"""
+Configuración de Django para el proyecto 'dashboard_sonora'.
+"""
+
 from pathlib import Path
 import os
 
@@ -8,7 +12,6 @@ SECRET_KEY = 'django-insecure-865&lqg_2v$y#p+p9$z6-i_y%@o%f)x881!p=o@h2b6+b8b6v'
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '::1']
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -50,7 +53,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'dashboard.wsgi.application'
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -59,24 +61,24 @@ DATABASES = {
 }
 
 
-AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
-]
-
-
 LANGUAGE_CODE = 'es-mx'
 TIME_ZONE = 'America/Hermosillo'
 USE_I18N = True
 USE_TZ = True
 
-
 STATIC_URL = 'static/'
-
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# =========================================================================
+# CONFIGURACIÓN MQTT (¡AHORA USA UN BROKER PÚBLICO REAL!)
+# =========================================================================
+MQTT_BROKER = "broker.hivemq.com" # 🟢 HOST REAL para evitar [Errno 11001]
+MQTT_PORT = 1883
+MQTT_TOPIC = "sonora/#"
+MQTT_USERNAME = None         
+MQTT_PASSWORD = None         

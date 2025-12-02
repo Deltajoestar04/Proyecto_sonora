@@ -1,4 +1,7 @@
-{% extends "base.html" %} {% load static %} {% block title %}Historial de {{ municipio_name }}{% endblock %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Historial de {{ municipio_name }}{% endblock %}
 
 {% block content %}
 <h1 class="mb-4">Historial de Datos para {{ municipio_name }}</h1>
@@ -9,14 +12,13 @@
     </div>
     <div class="card-body">
         <canvas id="historialChart" width="400" height="150"></canvas>
-
         <script id="chart-data" type="application/json">
-            {{ historial_data|safe }}
+            {{ historial_json|safe }}
         </script>
     </div>
 </div>
 
-<h2 class="mt-5">Datos Históricos (Últimos 100)</h2>
+<h2 class="mt-5">Datos Históricos</h2>
 <div class="table-responsive">
     <table class="table table-striped table-hover">
         <thead>
@@ -28,8 +30,10 @@
             </tr>
         </thead>
         <tbody>
-            {% for data in historial_data %}
+            {# 🛑 USAMOS historial_tabla AQUÍ (QuerySet con objetos datetime) #}
+            {% for data in historial_tabla %}
             <tr>
+                {# Esto ahora funciona porque data.timestamp es un objeto datetime #}
                 <td>{{ data.timestamp|date:"Y-m-d H:i:s" }}</td>
                 <td>{{ data.tipo_dato|capfirst }}</td>
                 <td class="fw-bold">{{ data.value|floatformat:2 }}</td>
@@ -47,5 +51,6 @@
 {% endblock %}
 
 {% block extra_js %}
+{# charts.js leerá el JSON y dibujará la gráfica #}
 <script src="{% static 'monitoreo/js/charts.js' %}"></script>
 {% endblock %}

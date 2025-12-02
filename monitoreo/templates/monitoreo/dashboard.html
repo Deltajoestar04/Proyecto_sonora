@@ -1,11 +1,12 @@
-{% extends "base.html" %} {% load static %}
+{% extends "base.html" %}
+{% load static %}
 
 {% block title %}Dashboard en Tiempo Real{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Dashboard Principal</h1>
+<h1 class="mb-4">Dashboard Principal de Monitoreo IoT</h1>
 
-<p class="lead text-muted">Datos de Temperatura, Humedad e Iluminación de Sonora</p>
+<p class="lead text-muted">Visualización en tiempo real de Temperatura, Humedad e Iluminación de Sonora.</p>
 <hr>
 
 <div class="row row-cols-1 row-cols-md-3 g-4" id="realtime-cards">
@@ -19,11 +20,12 @@
 
 <hr class="mt-5">
 
-<h2 class="mb-3">Explorar Historial por Municipio</h2>
+<h2 class="mb-3">Explorar Historial de Datos por Municipio</h2>
 <div class="list-group">
-    {% for municipio in municipios %}
+    {# Muestra solo los primeros 3 municipios en el listado de historial #}
+    {% for municipio in municipios|slice:":3" %}
     <a href="{% url 'municipio_detail' municipio_name=municipio %}" class="list-group-item list-group-item-action">
-        **{{ municipio|capfirst }}** - Ver Historial y Gráficas de Tendencia
+        {{ municipio|capfirst }} - Ver Gráficas y Tabla de Historial
     </a>
     {% empty %}
     {% endfor %}
