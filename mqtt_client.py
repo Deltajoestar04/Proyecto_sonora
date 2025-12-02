@@ -28,7 +28,6 @@ def on_message(client, userdata, msg):
         data = {"raw": payload}
 
     lect = Lectura()
-    # mapea campos como en run_mqtt.py
     if hasattr(lect, 'valor'):
         val = None
         if isinstance(data, dict):
